@@ -18,6 +18,7 @@ running = True
 # * importing spaceship
 path = join('images', 'player.png')
 player = pygame.image.load(path).convert_alpha()
+player_rect = player.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
 
 # * importing star
 path = join('images', 'star.png')
@@ -31,13 +32,12 @@ while running:
             running = False
 
     # * draw the game 
-
     display_surface.fill('black')
 
     for i in star_position:
         display_surface.blit(star, i)
 
-    display_surface.blit(player, (100,200))
+    display_surface.blit(player, player_rect)
 
     pygame.display.update()
 
