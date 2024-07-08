@@ -25,6 +25,20 @@ path = join('images', 'star.png')
 star = pygame.image.load(path).convert_alpha()
 star_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for i in range(20)]
 
+
+# * importing metor
+path = join('images', 'meteor.png')
+meteor = pygame.image.load(path).convert_alpha()
+meteor_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for i in range(20)]
+meteor_rect = meteor.get_frect(center = (WINDOW_WIDTH / 4, WINDOW_HEIGHT / 4))
+
+# * importing laser
+path = join('images', 'laser.png')
+laser = pygame.image.load(path).convert_alpha()
+laser_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for i in range(20)]
+laser_rect = laser.get_frect(center = (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3))
+
+
 while running:
     # * event loop
     for event in pygame.event.get():
@@ -37,7 +51,11 @@ while running:
     for i in star_position:
         display_surface.blit(star, i)
 
+
+    display_surface.blit(meteor, i)
+
     display_surface.blit(player, player_rect)
+    display_surface.blit(laser, laser_rect )
 
     pygame.display.update()
 
