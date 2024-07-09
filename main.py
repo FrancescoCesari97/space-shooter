@@ -22,6 +22,12 @@ class Player(pygame.sprite.Sprite):
         if recent_keys[pygame.K_SPACE]:
             print('laser')
 
+class Star(pygame.sprite.Sprite):
+     def __init__(self, groups, surf):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_frect(center = (randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
+   
 # * general setup
 pygame.init()
 pygame.display.set_caption('Space Shooter')
@@ -34,20 +40,16 @@ running = True
 
 clock = pygame.time.Clock()
 
+
+
 all_sprites = pygame.sprite.Group()
+star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
+
+for i in range(20):
+    Star(all_sprites, star_surf)
+
 player = Player(all_sprites)
 
-# * importing spaceship
-# path = join('images', 'player.png')
-# player = pygame.image.load(path).convert_alpha()
-# player_rect = player.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
-# player_direction = pygame.math.Vector2()
-# player_speed = 300
-
-# * importing star
-path = join('images', 'star.png')
-star = pygame.image.load(path).convert_alpha()
-star_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for i in range(20)]
 
 
 # * importing metor
@@ -72,43 +74,12 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # * player movement
-        # if event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-        #     print(1)
-        # if event.type == pygame.MOUSEMOTION:
-        #     player_rect.center = event.pos
-
-    # * input 
-
+    # * update
     all_sprites.update(dt)
 
     # * draw the game 
     display_surface.fill('black')
 
-    for i in star_position:
-        display_surface.blit(star, i)
-
-    display_surface.blit(meteor, i)
-
-    display_surface.blit(laser, laser_rect )
-
-
-    # * static player movement
-    # if player_rect.bottom >= WINDOW_HEIGHT:
-    #     player_rect.bottom = WINDOW_HEIGHT
-    #     player_direction.y = -1
-    # if player_rect.top <= 0:
-    #     player_rect.top = 0
-    #     player_direction.y = 1
-    # if player_rect.right >= WINDOW_WIDTH:
-    #     player_rect.right = WINDOW_WIDTH
-    #     player_direction.x = -1
-    # if player_rect.left <= 0:
-    #     player_rect.left = 0
-    #     player_direction.x = 1
-    # player_rect.center += player_direction * player_spped * dt
-
-    # display_surface.blit(player.image, player.rect)
     all_sprites.draw(display_surface)
 
     pygame.display.update()
