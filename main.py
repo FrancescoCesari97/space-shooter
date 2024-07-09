@@ -63,7 +63,12 @@ while running:
     player_direction.x = int(keys[pygame.K_d]) - int(keys[pygame.K_a])
     player_direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
     player_direction = player_direction.normalize() if player_direction else player_direction #*->to make the diagolan movement the same speed
-    print((player_direction * player_speed).magnitude())
+    # print((player_direction * player_speed).magnitude())
+
+    recent_keys = pygame.key.get_just_pressed()
+    if recent_keys[pygame.K_SPACE]:
+        print('laser')
+
     # if keys[pygame.K_d]:
     #     player_direction.x = 1
     # else:
