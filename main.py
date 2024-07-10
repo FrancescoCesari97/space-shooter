@@ -9,6 +9,18 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_frect(center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2))
         self.direction = pygame.Vector2()
         self.speed = 300
+
+        # * cooldown shoot
+        self.can_shoot = True
+        self.laser_shoot_time = 0
+        self.cooldown_duration = 400
+    
+    def laser_timer(self):
+        if not self.can_shoot:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.laser_shoot_time >= self.cooldown_duration:
+                self.can_shoot = True
+
     
     def update(self, dt):
         # print('ship is being updated')
@@ -19,8 +31,12 @@ class Player(pygame.sprite.Sprite):
         self.rect.center += self.direction * self.speed * dt
         
         recent_keys = pygame.key.get_just_pressed()
-        if recent_keys[pygame.K_SPACE]:
+        if recent_keys[pygame.K_SPACE] and self.can_shoot:
             print('laser')
+            self.can_shoot = False
+            self.laser_shoot_time = pygame.time.get_ticks()
+        
+        self.laser_timer()
 
 class Star(pygame.sprite.Sprite):
      def __init__(self, groups, surf):
@@ -64,6 +80,10 @@ laser = pygame.image.load(path).convert_alpha()
 laser_position = [(randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)) for i in range(20)]
 laser_rect = laser.get_frect(center = (WINDOW_WIDTH / 3, WINDOW_HEIGHT / 3))
 
+# * meteor event
+meteor_event = pygame.event.custom_type()
+pygame.time.set_timer(meteor_event, 500)
+
 
 while running:
     # * framerate
@@ -73,6 +93,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == meteor_event:
+            print()
 
     # * update
     all_sprites.update(dt)
