@@ -1,6 +1,6 @@
 import pygame
 from os.path import join
-from random import randint
+from random import randint, uniform
 
 from pygame.sprite import Group
 
@@ -64,9 +64,11 @@ class Meteor(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(center = pos)
+        self.direction = pygame.Vector2(uniform(-0.5, 0.5), 1)
+        self.speed = randint(50, 500)
     
     def update(self, dt):
-        self.rect.centery += 400 * dt
+        self.rect.center += self.direction * self.speed * dt
         if self.rect.top > WINDOW_HEIGHT:
             self.kill()
 
