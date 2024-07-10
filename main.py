@@ -2,6 +2,8 @@ import pygame
 from os.path import join
 from random import randint
 
+from pygame.sprite import Group
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
@@ -32,18 +34,30 @@ class Player(pygame.sprite.Sprite):
         
         recent_keys = pygame.key.get_just_pressed()
         if recent_keys[pygame.K_SPACE] and self.can_shoot:
-            print('laser')
+            Laser(laser, self.rect.midtop, all_sprites)
             self.can_shoot = False
             self.laser_shoot_time = pygame.time.get_ticks()
         
         self.laser_timer()
 
 class Star(pygame.sprite.Sprite):
+    
      def __init__(self, groups, surf):
         super().__init__(groups)
         self.image = surf
         self.rect = self.image.get_frect(center = (randint(0, WINDOW_WIDTH), randint(0, WINDOW_HEIGHT)))
-   
+
+
+class Laser(pygame.sprite.Sprite):
+    def __init__(self, surf, pos, groups):
+        super().__init__(groups)
+        self.image = surf
+        self.rect = self.image.get_frect(midbottom = pos)
+    
+    def update(self, dt):
+        self.rect.centery -= 400 * dt
+
+
 # * general setup
 pygame.init()
 pygame.display.set_caption('Space Shooter')
