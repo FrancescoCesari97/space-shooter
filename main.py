@@ -83,7 +83,13 @@ def collisions():
         if collided_lasers:
             laser.kill()
 
-        
+
+def display_score():
+    current_time = pygame.time.get_ticks() // 100
+    text_surf = font.render(str(current_time), True, '#faeb14')
+    text_rect = text_surf.get_frect(midbottom = (WINDOW_WIDTH / 2, WINDOW_HEIGHT - 50))
+    display_surface.blit(text_surf, text_rect)
+
 # * general setup
 pygame.init()
 pygame.display.set_caption('Space Shooter')
@@ -97,11 +103,11 @@ running = True
 clock = pygame.time.Clock()
 
 
-
 # * import
 star_surf = pygame.image.load(join('images', 'star.png')).convert_alpha()
 meteor_surf = pygame.image.load(join('images', 'meteor.png')).convert_alpha()
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
+font = pygame.font.Font(join('images', 'Oxanium-Bold.ttf'), 35)
 
 
 # * sprites
@@ -137,7 +143,7 @@ while running:
 
     # * update
     all_sprites.update(dt)
-    
+
     collisions()
 
     # * draw the game 
@@ -145,7 +151,7 @@ while running:
 
     all_sprites.draw(display_surface)
 
-
+    display_score()
 
     pygame.display.update()
 
