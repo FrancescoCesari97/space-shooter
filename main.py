@@ -89,6 +89,8 @@ def display_score():
     text_surf = font.render(str(current_time), True, '#faeb14')
     text_rect = text_surf.get_frect(midbottom = (WINDOW_WIDTH / 2, WINDOW_HEIGHT - 50))
     display_surface.blit(text_surf, text_rect)
+    pygame.draw.rect(display_surface, '#faeb14', text_rect.inflate(20, 20).move(0, -6), 5, 10)
+
 
 # * general setup
 pygame.init()
@@ -153,6 +155,7 @@ while running:
 
     display_score()
 
+    
     pygame.display.update()
 
 
