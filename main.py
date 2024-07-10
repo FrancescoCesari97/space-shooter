@@ -15,7 +15,14 @@ class Player(pygame.sprite.Sprite):
         # * cooldown shoot
         self.can_shoot = True
         self.laser_shoot_time = 0
-        self.cooldown_duration = 400
+        self.cooldown_duration = 300
+
+        # * mask 
+        self.mask = pygame.mask.from_surface(self.image)
+     
+
+
+
     
     def laser_timer(self):
         if not self.can_shoot:
@@ -59,6 +66,7 @@ class Laser(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+
 class Meteor(pygame.sprite.Sprite):
     def __init__(self, surf, pos, groups):
         super().__init__(groups)
@@ -74,7 +82,7 @@ class Meteor(pygame.sprite.Sprite):
 
 
 def collisions():
-    collided_meteor = pygame.sprite.spritecollide(player, meteor_sprites, False)
+    collided_meteor = pygame.sprite.spritecollide(player, meteor_sprites, False, pygame.sprite.collide_mask)
     if collided_meteor:
         running = False
 
