@@ -37,6 +37,17 @@ class Player(pygame.sprite.Sprite):
         self.direction.y = int(keys[pygame.K_s]) - int(keys[pygame.K_w])
         self.direction = self.direction.normalize() if self.direction else self.direction #*->to make the diagolan movement the same speed
         self.rect.center += self.direction * self.speed * dt
+
+
+    # * Keeping the player within the window border
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > WINDOW_WIDTH:
+            self.rect.right = WINDOW_WIDTH
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > WINDOW_HEIGHT:
+            self.rect.bottom = WINDOW_HEIGHT
         
         recent_keys = pygame.key.get_just_pressed()
         if recent_keys[pygame.K_SPACE] and self.can_shoot:
@@ -106,6 +117,7 @@ class AnimatedExplosion(pygame.sprite.Sprite):
             self.kill()
 
 def collisions():
+    global running
     collided_meteor = pygame.sprite.spritecollide(player, meteor_sprites, False, pygame.sprite.collide_mask)
     if collided_meteor:
         running = False
@@ -124,6 +136,10 @@ def display_score():
     display_surface.blit(text_surf, text_rect)
     pygame.draw.rect(display_surface, '#faeb14', text_rect.inflate(20, 20).move(0, -6), 5, 10)
 
+def start_game():
+    global game_active
+    game_active = True
+
 
 # * general setup
 pygame.init()
@@ -134,7 +150,7 @@ WINDOW_HEIGHT = 720
 
 display_surface = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 running = True
-
+game_active = False
 clock = pygame.time.Clock()
 
 
@@ -144,6 +160,8 @@ meteor_surf = pygame.image.load(join('images', 'meteor.png')).convert_alpha()
 laser_surf = pygame.image.load(join('images', 'laser.png')).convert_alpha()
 font = pygame.font.Font(join('images', 'Oxanium-Bold.ttf'), 35)
 explosion_frames = [pygame.image.load(join('images', 'explosion', f'{i}.png')).convert_alpha() for i in range(21)]
+
+
 
 
 # * sprites
@@ -164,6 +182,9 @@ player = Player(all_sprites)
 meteor_event = pygame.event.custom_type()
 pygame.time.set_timer(meteor_event, 500)
 
+# * start button
+button_rect = pygame.Rect(0, 0, 400, 50)
+button_rect.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
 
 while running:
     # * framerate
@@ -173,23 +194,31 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == meteor_event:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN and not game_active:
+                start_game()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if button_rect.collidepoint(event.pos) and not game_active:
+                start_game()
+        if event.type == meteor_event and game_active:
             x, y = randint(0, WINDOW_WIDTH), 0
             Meteor(meteor_surf, (x, y), (all_sprites, meteor_sprites))
-
-    # * update
-    all_sprites.update(dt)
-
-    collisions()
 
     # * draw the game 
     display_surface.fill('black')
 
-    all_sprites.draw(display_surface)
-
-    display_score()
-
-    
+    if game_active:
+        # * update
+        all_sprites.update(dt)
+        collisions()
+        all_sprites.draw(display_surface)
+        display_score()
+    else:
+        pygame.draw.rect(display_surface, '#faeb14', button_rect)
+        text_surf = font.render('Start Game press Enter', True, 'black')
+        text_rect = text_surf.get_rect(center=button_rect.center)
+        display_surface.blit(text_surf, text_rect)
+        
     pygame.display.update()
 
 
